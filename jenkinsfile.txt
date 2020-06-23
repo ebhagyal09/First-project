@@ -11,12 +11,14 @@ pipeline {
             credentalsId: 'github'
           }
           }
+        }
            stages{
           stage('Maven Build'){
             steps{
                  sh 'mvn clean package'
           }
           }
+           }
 
           stages{
           stage('Deploy Dev'){
@@ -33,4 +35,5 @@ pipeline {
           }
           
         }
+}
            
