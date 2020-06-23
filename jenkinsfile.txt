@@ -1,6 +1,6 @@
 pipeline {
         agent any 
-        envirnoment{
+        environment{
           PATH = "${PATH}:${tool name: 'maven3' , type: 'maven'}/bin"
         }
         stages{
@@ -25,7 +25,7 @@ pipeline {
             steps{
                  sshagent(['tomcat-dev']) {
                     //stop tomcat 
-                   sh "ssh ec2-user@172.31.16.242 /opt/tomcat8/bin/shutdown.sh"
+                   sh "ssh  -o StrictHostKeyChecking=no ec2-user@172.31.16.242 /opt/tomcat8/bin/shutdown.sh"
                                        // copy war file to remote tomcat
                     sh " scp target/6pmwebapp.war   ec2-user@172.31.16.242:/opt/tomcat8/webapps/"
                     //stop tomcat 
