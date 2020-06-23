@@ -8,7 +8,7 @@ pipeline {
             steps{
             git url: 'https://github.com/ebhagyal09/First-project',
             branch: 'master',
-            credentalsId: 'github'
+            credentialsId: 'github'
           }
           }
         
