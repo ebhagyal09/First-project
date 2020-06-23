@@ -1,42 +1,35 @@
-pipeline{
-    agent any
-    environment{
-	  PATH = "${PATH}:${tool name: 'maven3', type: 'maven'}/bin"
-	}
-    stages{
-
-        stage('Maven Build'){
-            steps{
-                sh "mvn clean package"
-            }
+pipeline {
+        agent any 
+        envirnoment{
+          PATH = "${PATH}:${tool name: 'maven3' , type: 'maven'}/bin"
         }
-
-        stage('Deploy - Dev'){
-            when {
-                branch 'develop'
-            }
+        stages{
+          stage('SCM checkout'){
             steps{
-                echo "deploy to dev server"
-            }
-        }
-
-        stage('Deploy - UAT'){
-            when {
-                branch 'staging'
-            }
+            git url: 'https://github.com/ebhagyal09/First-project',
+            branch: 'master',
+            credentalsId: 'github'
+          }
+          }
+           stages{
+          stage('Maven Build'){
             steps{
-                echo "deploy to uat server"
-            }
-        }
+                 sh 'mvn clean package'
+          }
+          }
 
-        stage('Deploy - Prod'){
-            when {
-                branch 'master'
-            }
+          stages{
+          stage('Deploy Dev'){
             steps{
-                echo "deploy to prod server"
+                 sshagent(['tomcat-dev']) {
+                    //stop tomcat 
+                   sh "ssh ec2-user@172.31.16.242 /opt/tomcat8/bin/shutdown.sh"
+                    // copy war file to remote tomcat
+                    sh " scp target/6pmwebapp.war   ec2-user@172.31.16.242:/opt/tomcat8/webapps/"
+                    //stop tomcat 
+                    sh "ssh ec2-user@172.31.16.242 /opt/tomcat8/bin/startup.sh"
             }
+          }
+          }
+          
         }
-    }
-}
-
