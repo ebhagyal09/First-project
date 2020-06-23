@@ -11,17 +11,16 @@ pipeline {
             credentalsId: 'github'
           }
           }
-        }
-           stages{
+        
+        
           stage('Maven Build'){
             steps{
                  sh 'mvn clean package'
           }
           }
-           }
+           
 
-          stages{
-          stage('Deploy Dev'){
+           stage('Deploy Dev'){
             steps{
                  sshagent(['tomcat-dev']) {
                     //stop tomcat 
@@ -32,7 +31,7 @@ pipeline {
                     sh "ssh ec2-user@172.31.16.242 /opt/tomcat8/bin/startup.sh"
             }
           }
-          }
+           }
           
         }
 }
